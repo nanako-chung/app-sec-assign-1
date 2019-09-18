@@ -1,4 +1,1 @@
-install: make get-deps
-compiler:
-  - clang
-  - gcc
+language: c
