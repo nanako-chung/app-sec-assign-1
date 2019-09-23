@@ -1,0 +1,21 @@
+Nanako Chung
+Application Security
+Brendan Dolan-Gavitt
+September 22nd, 2019
+
+REPORT 1:
+
+• Exactly how the program works:
+	The spell.c file contains three functions that work to check the spelling of content in a given file. One function takes a "dictionary" file (a file with many words that are spelled correctly) and stores it in a hashtable (i.e. load_dictionary). Another function takes a file, reads in the content line by line, iterates over each word, and assesses whether it is misspelled or not by calling the third function, which takes the word and tries to find it in the dictionary/hashtable.
+
+• The output of Valgrind
+
+
+• what bugs you expect may exist in your code
+	Currently, we are not always accurate about misspelled words. 
+
+• why those bugs might occur
+	Our dictionary file is not large enough; we would need to create an immense dictionary in order to get more accuracy for misspelled words.
+
+• what steps you took to mitigate or fix those bugs. 
+
