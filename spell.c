@@ -1,5 +1,8 @@
 #include "dictionary.h"
 #include "dictionary.c"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
 	int count = 0;
@@ -93,9 +96,9 @@ bool check_word(const char* word, hashmap_t hashtable[]) {
 }
 
 // test main - DOES NOT NEED TO BE SUBMITTED
-int main() {
-	char * misspelled[MAX_MISSPELLED];
-	printf("%i\n", check_words(fopen("test_worlist.txt", "r"), hashtable, misspelled));
-	load_dictionary("wordlist.txt", hashtable);
-	return 0;
-}
+// int main() {
+// 	char * misspelled[MAX_MISSPELLED];
+// 	printf("%i\n", check_words(fopen("test_worlist.txt", "r"), hashtable, misspelled));
+// 	load_dictionary("wordlist.txt", hashtable);
+// 	return 0;
+// }
