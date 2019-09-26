@@ -1,8 +1,8 @@
 #include "dictionary.h"
-#include "dictionary.c"
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
+#include <string.h>
+#include <ctype.h>
 
 int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
 	int count = 0;
@@ -30,6 +30,7 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
 				}
 
 				if (!check_word(line_data[i], hashtable)) {
+					// printf("%s\n", line_data[i]);
 					misspelled[count] = line_data[i];
 					count += 1;
 				}
@@ -41,9 +42,6 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
 		
 		//close file
 		fclose(fp);
-
-		// since count kept track of index we have to add 1 to get the length
-		return count + 1;
 	} 
 
 	return count;
@@ -56,7 +54,7 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[]) {
 	}
 
 	// open the file for reading
-	FILE * in_file = fopen(dictionary_file, "r" );
+	FILE * in_file = fopen(dictionary_file, "r, ccs=UTF-8");
 
 	//check if file exists
 	if (in_file != NULL && hashtable != NULL) {
@@ -116,10 +114,12 @@ bool check_word(const char* word, hashmap_t hashtable[]) {
 }
 
 // test main - DOES NOT NEED TO BE SUBMITTED
-int main() {
-	if (load_dictionary("wordlist.txt", hashtable)) {
+int main(int argc, char ** argv) {
+	if (argc < 3) exit(1);
+	node* hashtable[HASH_SIZE];
+	if (load_dictionary(argv[2], hashtable)) {
 		char * misspelled[MAX_MISSPELLED];
-		printf("%i\n", check_words(fopen("test1.txt", "r"), hashtable, misspelled));
+		printf("%i\n", check_words(fopen(argv[1], "r, ccs=UTF-8"), hashtable, misspelled));
 	}
 	return 0;
 }
