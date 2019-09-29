@@ -1,6 +1,10 @@
 language: c
-script:
-  - make Makefile
-  - sudo apt-get install check
-  - gcc spell.c test_main.c -o test_main
-  - ./test_main
+install: make get-deps
+before_install:
+    - sudo apt-get update
+    - sudo apt-get install -y check
+compiler: 
+    - gcc
+scripts:
+    - gcc -Wall -o spell_check dictionary.o spell.o main.o
+    - ./spell_check test1.txt wordlist.txt

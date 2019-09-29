@@ -24,3 +24,8 @@ REPORT 1:
 	- For the dictionary files, it was tricky and almost pointless to find a solution because there can never be 100% coverage of the words in the English (and non-English) language...
 	- In my code, I looked at strings with any wacky punctuation or special character, trimmed them using my trim() function to cut off any non-alphanumeric characters at the beginning and end, and then let it go through the detector to see if it was actually misspelled. Thus, all of the unexpected characters in the ASCII table from !-~ and Ç-■ are handled.
 	- Numeric strings are handled as well. We trim() the string, then count up the digits, commas, and periods, then do a handy math conditional to check if the string is a valid number.
+
+• all of the bugs found by your tests
+• all of the bugs found by fuzzing
+• how the bugs were fixed
+• how similar bugs can be avoided in the future

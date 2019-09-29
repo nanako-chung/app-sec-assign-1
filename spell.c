@@ -5,14 +5,14 @@
 #include <ctype.h>
 
 bool trim(char* word) {
+	if (strlen(word) == 0) return false;
 	while (!isalnum(word[strlen(word) - 1]) || !isalnum(word[0])) {
-		if (strlen(word) == 0) break;
+		if (strlen(word) == 0) return false;
 		if (!isalnum(word[0])) memmove(word, word+1, strlen(word)); 
 		if (!isalnum(word[strlen(word) - 1])) word[strlen(word) - 1] = 0;
 	}
 		
 	// faulty detection
-	if (strlen(word) == 0) return false;
 	if (strcmp(word, "'") == 0) return false;
 	return true;
 }
