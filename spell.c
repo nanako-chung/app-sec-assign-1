@@ -4,10 +4,23 @@
 #include <string.h>
 #include <ctype.h>
 
+bool trim(char* word) {
+	while (!isalnum(word[strlen(word) - 1]) || !isalnum(word[0])) {
+		if (strlen(word) == 0) break;
+		if (!isalnum(word[0])) memmove(word, word+1, strlen(word)); 
+		if (!isalnum(word[strlen(word) - 1])) word[strlen(word) - 1] = 0;
+	}
+		
+	// faulty detection
+	if (strlen(word) == 0) return false;
+	if (strcmp(word, "'") == 0) return false;
+	return true;
+}
+
 int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
 
 	//check if file exists
-	if (fp == NULL || hashtable != NULL) {
+	if (fp == NULL || hashtable == NULL) {
 		return 0;
 	}
 
@@ -16,48 +29,43 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
 	char word[LENGTH + 1]; 
 
 	// read word one by one
-	while ((fscanf(fp, "%45[\"!-~Ç-■]%*[^\"!-~Ç-■]", word)) == 1) {
-		if (strlen(word) == 0) continue;
-		
-		while ((!isalnum(word[strlen(word) - 1]) && word[strlen(word) - 1] != '\'') || (!isalnum(word[0]) && word[0] != '\'')) {
-			if (strlen(word) == 0) break;
-			if (!isalnum(word[strlen(word) - 1]) && word[strlen(word) - 1] != '\'') word[strlen(word) - 1] = 0;
-			if (!isalnum(word[0]) && word[0] != '\'') memmove(word, word+1, strlen(word)); 
-		}
-			
-		// faulty detection
-		if (strcmp(word, "'") == 0) continue;
+	while ((fscanf(fp, "%45[\"!-~Ç-■]%*[^\"!-~Ç-■]", word)) != EOF) {
 		if (strlen(word) == 0) continue;
 
-		char correct_word[LENGTH + 1];
-		strcpy(correct_word, word);
+		char delimiter[] = "/-";
+		char *individual_word = strtok(word, delimiter); 
+		while (individual_word != NULL) {
+			if (trim(individual_word)) {
+				char correct_word[LENGTH + 1];
+				strcpy(correct_word, individual_word);
 
-		int numeric_flag = 0;
-		int num_commas = 0;
-		int num_decimals = 0;
-		// / and - and sometimes slicing on ' (e.g. for didn't and should've)
+				int numeric_flag = 0;
+				int num_commas = 0;
+				int num_decimals = 0;
+				for (int i = 0; i < strlen(individual_word); i++) {
+					
+					// lower case the word because everything in dictionary is lower case
+					individual_word[i] = tolower(individual_word[i]);
 
-		for (int i = 0; i < strlen(word); i++) {
-			
-			// lower case the word because everything in dictionary is lower case
-			word[i] = tolower(word[i]);
+					if (isdigit(individual_word[i])) numeric_flag++;
+					if (individual_word[i] == ',') num_commas++;
+					if (individual_word[i] == '.') num_commas++;
+				}
 
-			if (isdigit(word[i])) numeric_flag++;
-			if (word[i] == ',') num_commas++;
-			if (word[i] == '.') num_commas++;
-		}
+				// all numeric with commas, don't add to misspelled - consider th,st,nd,rd and fractions (e.g. 1/10)
+				if (numeric_flag == (strlen(individual_word) - num_commas) || numeric_flag == (strlen(individual_word) - num_decimals)) {
+					individual_word = strtok(NULL, delimiter); 
+					continue;
+				}
 
-		// all numeric with commas, don't add to misspelled - consider th,st,nd,rd and fractions (e.g. 1/10)
-		if (numeric_flag == (strlen(word) - num_commas) || numeric_flag == (strlen(word) - num_decimals)) continue;
+				if (!check_word(individual_word, hashtable)) {
+					ptr[count] = (char*) malloc(sizeof(correct_word));
+					strcpy(ptr[count], correct_word);
+					count += 1;
+				}
+			}
 
-		// grammatical rule: an ' at the end without an s is just a misread word; strip the ' (e.g. '-way')
-		// if (word[strlen(word) - 1] == '\'' && word[strlen(word) - 2] != 's') word[strlen(word) - 1] = 0;
-		// printf("word: %s, last: %c, before last: %c\n", word, word[strlen(word) - 2], word[strlen(word) - 1]);
-		
-		if (!check_word(word, hashtable)) {
-			ptr[count] = (char*) malloc(sizeof(word));
-			strcpy(ptr[count], correct_word);
-			count += 1;
+			individual_word = strtok(NULL, delimiter);
 		}
 
 		// prevent overflow
@@ -75,7 +83,7 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[]) {
 	FILE * in_file = fopen(dictionary_file, "r, ccs=UTF-8");
 
 	//check if file exists
-	if (in_file != NULL && hashtable != NULL) {
+	if (in_file == NULL || hashtable == NULL) {
 		return false;
 	}
 
@@ -128,8 +136,6 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[]) {
 }
 
 bool check_word(const char* word, hashmap_t hashtable[]) {
-	if (sizeof(word) > LENGTH + 1) return false;
-
 	int index = hash_function(word);
 	node * current = hashtable[index];
 	while (current != NULL) {
