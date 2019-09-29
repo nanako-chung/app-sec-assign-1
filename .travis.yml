@@ -1,3 +1,4 @@
 language: c
 script:
-  - make Makefile
+  - make
+  - ./spell_check a_tale_of_two_cities.txt wordlist.txt
