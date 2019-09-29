@@ -1,6 +1,6 @@
 language: c
 script:
   - make Makefile
-  - sudo apt-get check
+  - sudo apt-get libcheck-dev
   - gcc test_main.c -o test_main
   - ./test_main
