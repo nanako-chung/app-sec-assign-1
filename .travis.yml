@@ -1,6 +1,7 @@
 language: c
 script:
   - make Makefile
+  - apt-get check
   - gcc test_main.c -o test_main
   - ./test_main
 
