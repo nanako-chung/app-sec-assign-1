@@ -123,11 +123,11 @@ bool check_word(const char* word, hashmap_t hashtable[]) {
 		for (int i = 0; i < strlen(word); i++) {
 			
 			// lower case the word because everything in dictionary is lower case
-			individual_word[i] = tolower(word[i]);
+			individual_word[i] = tolower(individual_word[i]);
 
-			if (isdigit(word[i])) numeric_flag++;
-			if (word[i] == ',') num_commas++;
-			if (word[i] == '.') num_commas++;
+			if (isdigit(individual_word[i])) numeric_flag++;
+			if (individual_word[i] == ',') num_commas++;
+			if (individual_word[i] == '.') num_commas++;
 		}
 
 		// all numeric with commas, don't add to misspelled - consider th,st,nd,rd and fractions (e.g. 1/10)
