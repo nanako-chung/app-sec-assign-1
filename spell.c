@@ -59,7 +59,7 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
 				}
 
 				if (!check_word(individual_word, hashtable)) {
-					ptr[count] = (char*) calloc(sizeof(correct_word));
+					ptr[count] = (char*) malloc(sizeof(correct_word));
 					strcpy(ptr[count], correct_word);
 					count += 1;
 				}
@@ -96,20 +96,20 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[]) {
 	// maximum length for a word is 45 * 1 byte
 	char line[LENGTH + 1];
 	int count = 0;
+	node * newNode = (node *) malloc(sizeof(node));
+	if (newNode == NULL) {
+		return false;
+	}
 
 	// read word one by one
 	while (fgets(line, sizeof(line), in_file) != NULL) {
-		node * newNode = (node *) malloc(sizeof(node));
-		if (newNode == NULL) {
-			return false;
-		}
 		int i;
 		for (i = 0; i < strlen(line); i++) {
 			if (line[i] != '\n' && line[i]) {
 				newNode->word[i] = tolower(line[i]);
 			}
 		}
-		
+
 		newNode->word[i] = '\0';
 
 		int index = hash_function(newNode->word);
