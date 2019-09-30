@@ -38,6 +38,9 @@ START_TEST(test_check_words_normal)
     char *misspelled[MAX_MISSPELLED];
     FILE *fp = fopen("test1.txt", "r");
     int num_misspelled = check_words(fp, hashtable, misspelled);
+    for (int i = 0; i < num_misspelled; i++) {
+        printf("%s\n", misspelled[i]);
+    }
     ck_assert(num_misspelled == 3);
     bool test = strlen(misspelled[0]) == strlen(expected[0]);
     int len1 = strlen(misspelled[0]);
