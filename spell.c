@@ -116,30 +116,32 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[]) {
 bool check_word(const char* word, hashmap_t hashtable[]) {
 	char individual_word[LENGTH + 1];
 	memcpy(individual_word, word, LENGTH + 1);
-	int numeric_flag = 0;
-	int num_commas = 0;
-	int num_decimals = 0;
-	for (int i = 0; i < strlen(word); i++) {
-		
-		// lower case the word because everything in dictionary is lower case
-		individual_word[i] = tolower(word[i]);
+	if (trim(individual_word)) {
+		int numeric_flag = 0;
+		int num_commas = 0;
+		int num_decimals = 0;
+		for (int i = 0; i < strlen(word); i++) {
+			
+			// lower case the word because everything in dictionary is lower case
+			individual_word[i] = tolower(word[i]);
 
-		if (isdigit(word[i])) numeric_flag++;
-		if (word[i] == ',') num_commas++;
-		if (word[i] == '.') num_commas++;
-	}
-
-	// all numeric with commas, don't add to misspelled - consider th,st,nd,rd and fractions (e.g. 1/10)
-	if (numeric_flag == (strlen(individual_word) - num_commas) || numeric_flag == (strlen(individual_word) - num_decimals)) return true;
-
-	int index = hash_function(individual_word);
-	node * current = hashtable[index];
-	while (current != NULL) {	
-		if (strcmp(current->word, individual_word) == 0) {
-			return true;
+			if (isdigit(word[i])) numeric_flag++;
+			if (word[i] == ',') num_commas++;
+			if (word[i] == '.') num_commas++;
 		}
 
-		current = current->next;
+		// all numeric with commas, don't add to misspelled - consider th,st,nd,rd and fractions (e.g. 1/10)
+		if (numeric_flag == (strlen(individual_word) - num_commas) || numeric_flag == (strlen(individual_word) - num_decimals)) return true;
+
+		int index = hash_function(individual_word);
+		node * current = hashtable[index];
+		while (current != NULL) {	
+			if (strcmp(current->word, individual_word) == 0) {
+				return true;
+			}
+
+			current = current->next;
+		}
 	}
 
 	return false;
