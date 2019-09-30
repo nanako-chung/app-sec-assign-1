@@ -5,13 +5,13 @@
 #include <ctype.h>
 
 bool trim(char* word) {
-	if (strlen(word) == 0) return false;
+	if (strlen(word) == 0 || word == NULL) return false;
 	while (!isalnum(word[strlen(word) - 1]) || !isalnum(word[0])) {
 		if (strlen(word) == 0) return false;
 		if (!isalnum(word[0])) memmove(word, word+1, strlen(word)); 
 		if (!isalnum(word[strlen(word) - 1])) word[strlen(word) - 1] = 0;
 	}
-		
+
 	// faulty detection
 	if (strcmp(word, "'") == 0) return false;
 	return true;
@@ -20,7 +20,7 @@ bool trim(char* word) {
 int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
 
 	//check if file exists
-	if (fp == NULL || hashtable == NULL) {
+	if (fp == NULL || hashtable == NULL || misspelled == NULL) {
 		return 0;
 	}
 
@@ -59,7 +59,7 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
 				}
 
 				if (!check_word(individual_word, hashtable)) {
-					ptr[count] = (char*) malloc(sizeof(correct_word));
+					ptr[count] = (char*) calloc(sizeof(correct_word));
 					strcpy(ptr[count], correct_word);
 					count += 1;
 				}
@@ -74,6 +74,7 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
 
 	//close file
 	fclose(fp);
+	free(ptr);
 	return count;
 }
 
@@ -98,16 +99,18 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[]) {
 
 	// read word one by one
 	while (fgets(line, sizeof(line), in_file) != NULL) {
-		node * newNode = malloc(sizeof(node));
+		node * newNode = (node *) malloc(sizeof(node));
 		if (newNode == NULL) {
 			return false;
 		}
-		
-		for (int i = 0; i < strlen(line); i++) {
+		int i;
+		for (i = 0; i < strlen(line); i++) {
 			if (line[i] != '\n' && line[i]) {
 				newNode->word[i] = tolower(line[i]);
 			}
 		}
+		
+		newNode->word[i] = '\0';
 
 		int index = hash_function(newNode->word);
 
@@ -132,6 +135,7 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[]) {
 
 	//close file
 	fclose(in_file);
+	free(newNode);
 	return true;
 }
 

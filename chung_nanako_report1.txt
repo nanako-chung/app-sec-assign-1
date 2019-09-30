@@ -11,7 +11,6 @@ REPORT 1:
 • The output of Valgrind
 	
 
-
 • what bugs you expect may exist in your code & why those bugs might occur
 	- The dictionary may not have as much coverage as we trust it to because it does not list all the possible words (e.g. "shoemaking" is not in the dictionary)
 	- The dictionary may not have the correct spelling of words because there may be mistakes or alternative spellings (e.g. "colour" vs. "color")
@@ -26,6 +25,13 @@ REPORT 1:
 	- Numeric strings are handled as well. We trim() the string, then count up the digits, commas, and periods, then do a handy math conditional to check if the string is a valid number.
 
 • all of the bugs found by your tests
+	
+
 • all of the bugs found by fuzzing
+	
+
 • how the bugs were fixed
+	
+
 • how similar bugs can be avoided in the future
+	
