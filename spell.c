@@ -136,7 +136,7 @@ bool check_word(const char* word, hashmap_t hashtable[]) {
 		int index = hash_function(individual_word);
 		node * current = hashtable[index];
 		while (current != NULL) {
-			printf("see: %s, looking for: %s\n", current->word, individual_word);
+			// printf("see: %s, looking for: %s\n", current->word, individual_word);
 			if (strcmp(current->word, individual_word) == 0) {
 				return true;
 			}

@@ -17,7 +17,7 @@ main.o: main.c
 	gcc -Wall -c main.c
 
 test: dictionary.o spell.o test_main.o
-	gcc -Wall -o test_main test_main.o spell.o dictionary.o -lcheck -lm -lrt -lpthread -lsubunit
+	gcc -Wall -o test_main test_main.o spell.o dictionary.o 
 	./test_main
 
 prog: dictionary.o spell.o main.o
