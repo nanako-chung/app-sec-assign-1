@@ -39,6 +39,7 @@ START_TEST(test_check_words_normal)
     FILE *fp = fopen("test1.txt", "r");
     int num_misspelled = check_words(fp, hashtable, misspelled);
     for (int i = 0; i < num_misspelled; i++) {
+        printf("%d\n", check_word("a", hashtable));
         printf("%s\n", misspelled[i]);
     }
     ck_assert(num_misspelled == 3);
