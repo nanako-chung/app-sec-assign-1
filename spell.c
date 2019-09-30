@@ -120,10 +120,10 @@ bool check_word(const char* word, hashmap_t hashtable[]) {
 		int numeric_flag = 0;
 		int num_commas = 0;
 		int num_decimals = 0;
-		for (int i = 0; i < strlen(word); i++) {
+		for (int i = 0; i < strlen(individual_word); i++) {
 			
 			// lower case the word because everything in dictionary is lower case
-			individual_word[i] = tolower(word[i]);
+			individual_word[i] = tolower(individual_word[i]);
 
 			if (isdigit(individual_word[i])) numeric_flag++;
 			if (individual_word[i] == ',') num_commas++;
@@ -135,7 +135,7 @@ bool check_word(const char* word, hashmap_t hashtable[]) {
 
 		int index = hash_function(individual_word);
 		node * current = hashtable[index];
-		while (current != NULL) {	
+		while (current != NULL) {
 			if (strcmp(current->word, individual_word) == 0) {
 				return true;
 			}
