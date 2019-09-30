@@ -58,7 +58,7 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
 bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[]) {
 
 	// open the file for reading
-	FILE * in_file = fopen(dictionary_file, "r, ccs=UTF-8");
+	FILE * in_file = fopen(dictionary_file, "r");
 
 	//check if file exists
 	if (in_file == NULL || hashtable == NULL) {
