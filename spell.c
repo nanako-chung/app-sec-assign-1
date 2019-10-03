@@ -17,37 +17,67 @@ bool trim(char* word) {
 	return true;
 }
 
+// with buffer overflow check
 int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
 
-	//check if file exists
+	// check to see if file exists
 	if (fp == NULL || hashtable == NULL || misspelled == NULL) {
 		return 0;
 	}
 
 	char** ptr = misspelled;
 	int count = 0;
+	int index = 0;
 	char word[LENGTH + 1]; 
 
-	// read word one by one
-	while ((fscanf(fp, "%45[\"!-~Ç-■]%*[^\"!-~Ç-■]", word)) != EOF) {
-		if (strlen(word) == 0) continue;
+	for (int i = 0; i < LENGTH + 1; i++) {
+		word[i] = '\0';
+	}
+	
+	char c;
 
-		char delimiter[] = "/-";
-		char *individual_word = strtok(word, delimiter); 
-		while (individual_word != NULL) {
-			if (trim(individual_word)) {
-				if (!check_word(individual_word, hashtable)) {
-					ptr[count] = (char*) malloc(sizeof(individual_word));
-					strcpy(ptr[count], individual_word);
+	while ((c = fgetc (fp)) != EOF) {  /* for each char in file */
+		if (index > LENGTH) {
+			continue;
+		} else if (c == ' ' || c == '\n' || c == '-' || c == '/' || index == LENGTH) {
+			
+			if (strlen(word) == 0) continue;
+
+			if (trim(word)) {
+				if (!check_word(word, hashtable)) {
+					ptr[count] = (char*) malloc(LENGTH + 1);
+					memcpy(ptr[count], word, LENGTH);
 					count += 1;
 				}
 			}
 
-			individual_word = strtok(NULL, delimiter);
+			free(ptr[count]);
+
+			if (index != LENGTH) index = 0;
+			else index++;
+
+			for (int i = 0; i < LENGTH + 1; i++) {
+				word[i] = '\0';
+			}
+
+			// prevent overflow
+			if (count == MAX_MISSPELLED) break;
+		} else {
+			word[index] = c;
+			index++;
+		}
+    }
+	
+	if (word[0]) {
+		if (trim(word)) {
+			if (!check_word(word, hashtable)) {
+				ptr[count] = (char*) malloc(LENGTH + 1);
+				memcpy(ptr[count], word, LENGTH);
+				count += 1;
+			}
 		}
 
-		// prevent overflow
-		if (count == MAX_MISSPELLED) break;
+		free(ptr[count]);
 	}
 
 	//close file
@@ -136,7 +166,6 @@ bool check_word(const char* word, hashmap_t hashtable[]) {
 		int index = hash_function(individual_word);
 		node * current = hashtable[index];
 		while (current != NULL) {
-			// printf("see: %s, looking for: %s\n", current->word, individual_word);
 			if (strcmp(current->word, individual_word) == 0) {
 				return true;
 			}

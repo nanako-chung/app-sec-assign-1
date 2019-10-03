@@ -1,8 +1,8 @@
 language: c
+install: make get-deps
 before_install:
-    - brew install check
+    - sudo apt-get update
+    - sudo apt-get install -y check
 compiler: 
     - gcc
-os:
-    - osx
-script: make && make test
+script: make
