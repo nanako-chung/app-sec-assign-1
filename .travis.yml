@@ -5,4 +5,4 @@ before_install:
     - sudo apt-get install -y check
 compiler: 
     - gcc
-script: make
+script: make && make test
